@@ -1,7 +1,7 @@
 namespace Blog.EventSourcing.Domain
 {
     using NEventStore;
-
+    
     public class StoreFactory : IStoreFactory
     {
         private static IStoreEvents store;

@@ -42,6 +42,11 @@ namespace Blog.EventSourcing.Domain
             ApplyChange(evt);
         }
 
+        public void ChangeName()
+        {
+            
+        }
+
         private void ApplyChange(IPersonEvent personEvent)
         {
             Apply((dynamic)personEvent);
