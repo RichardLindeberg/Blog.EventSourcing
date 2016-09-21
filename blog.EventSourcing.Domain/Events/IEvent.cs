@@ -1,4 +1,4 @@
-namespace Blog.EventSourcing.Domain
+namespace Blog.EventSourcing.Domain.Events
 {
     public interface IEvent
     {

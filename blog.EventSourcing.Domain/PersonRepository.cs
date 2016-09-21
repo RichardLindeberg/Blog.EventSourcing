@@ -3,6 +3,8 @@ namespace Blog.EventSourcing.Domain
     using System;
     using System.Linq;
 
+    using Blog.EventSourcing.Domain.Events;
+
     using NEventStore;
 
     public class PersonRepository
