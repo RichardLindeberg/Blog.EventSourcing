@@ -12,9 +12,11 @@ namespace Blog.EventSourcing.Domain
 
         public Person(IEnumerable<IPersonEvent> events)
         {
+            Version = 0;
             foreach (var personEvent in events)
             {
                 Apply(personEvent);
+                Version++;
             }
         }
 
@@ -27,6 +29,8 @@ namespace Blog.EventSourcing.Domain
         public string Name { get; set; }
 
         public DateTime CreatedAt { get; set; }
+
+        public int Version { get; }
 
         public void Create(CreatePerson createPerson)
         {

@@ -1,11 +1,9 @@
 namespace Blog.EventSourcing.Domain
 {
-    using NEventStore;
+    using EventStore.ClientAPI;
 
     public interface IStoreFactory
     {
-        IStoreEvents CreateStore();
-
-        IStoreEvents GetStore();
+        IEventStoreConnection GetStore();
     }
 }
