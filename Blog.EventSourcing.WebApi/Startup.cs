@@ -29,6 +29,7 @@ namespace Blog.EventSourcing.WebApi
         {
             // Add framework services.
             services.AddMvc();
+            services.AddSingleton<IPeopleReadModell>(PeopleReadModell)
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
