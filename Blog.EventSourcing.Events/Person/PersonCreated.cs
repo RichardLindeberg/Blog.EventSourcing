@@ -1,4 +1,4 @@
-namespace Blog.EventSourcing.Domain.Events
+namespace Blog.EventSourcing.Events.Person
 {
     using System;
 

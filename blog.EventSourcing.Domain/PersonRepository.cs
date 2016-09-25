@@ -4,9 +4,10 @@ namespace Blog.EventSourcing.Domain
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using System.Reflection;
     using System.Threading.Tasks;
 
-    using Blog.EventSourcing.Domain.Events;
+    using Blog.EventSourcing.Events.Person;
 
     using EventStore.ClientAPI;
     using EventStore.Common.Utils;
@@ -34,22 +35,10 @@ namespace Blog.EventSourcing.Domain
 
         private IEnumerable<EventData> GetEventData(Person person)
         {
-            return person.UncommitEvents.Select(GetEventData);
+            return person.UncommitEvents.Select(t => t.ToEventData());
         }
 
-        private EventData GetEventData(IPersonEvent evt)
-        {
-            var typeName = evt.GetType().Name;
-            typeName = ToCamelCase(typeName);
-            var dict = new Dictionary<string, object> { { "NetTypeName", evt.GetType().FullName } };
-            return new EventData(Guid.NewGuid(), typeName, true, evt.ToJsonBytes(), dict.ToJsonBytes());
-        }
-
-        private string ToCamelCase(string str)
-        {
-           return str.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + str.Substring(1);
-        }
-
+   
         private Person Load(Guid id)
         {
             var evts = GetEvents(id).ToList();
@@ -69,24 +58,49 @@ namespace Blog.EventSourcing.Domain
                 var items = stream.Result;
                 foreach (var resolvedEvent in items.Events)
                 {
-                    var metaData = resolvedEvent.Event.Metadata.ParseJson<Dictionary<string, object>>();
-
-                    var type = Type.GetType((string)metaData["netTypeName"]);
-                    if (type == null)
-                    {
-                        throw new InvalidOperationException($"Could not resolve type {metaData["NetTypeName"]}");
-                    }
-
-                    var t3 = resolvedEvent.Event.Data.FromUtf8();
-                    var evt = JsonConvert.DeserializeObject(t3, type);
-                    if ((evt is IPersonEvent) == false)
-                    {
-                        throw new InvalidOperationException($"Non IPersonEvent in personstream {type.FullName}");
-                    }
-
-                    yield return evt as IPersonEvent;
+                    yield return resolvedEvent.Event.ToIPersonEvent();
                 }
             }
         }
+    }
+
+
+    public static class EventDataSerializer
+    {
+        public static EventData ToEventData(this IPersonEvent evt)
+        {
+            var typeName = evt.GetType().Name;
+            typeName = ToCamelCase(typeName);
+            var dict = new Dictionary<string, object> { { "NetTypeName", evt.GetType().FullName } };
+            return new EventData(Guid.NewGuid(), typeName, true, evt.ToJsonBytes(), dict.ToJsonBytes());
+        }
+
+        public static IPersonEvent ToIPersonEvent(this RecordedEvent eventData)
+        {
+            var metaData = eventData.Metadata.ParseJson<Dictionary<string, object>>();
+
+            var type = GetTypeWithAssemblyName((string)metaData["netTypeName"]);
+            
+            var evtDataAsString = eventData.Data.FromUtf8();
+            var evt = JsonConvert.DeserializeObject(evtDataAsString, type);
+
+            if ((evt is IPersonEvent) == false)
+            {
+                throw new InvalidOperationException($"Non IPersonEvent in personstream {type.FullName}");
+            }
+
+            return evt as IPersonEvent;
+        }
+
+        private static Type GetTypeWithAssemblyName(string assemblyQualifiedName)
+        {
+            return Type.GetType($"{assemblyQualifiedName}, Blog.EventSourcing.Events", true);
+        }
+
+        private static string ToCamelCase(string str)
+        {
+            return str.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + str.Substring(1);
+        }
+
     }
 }

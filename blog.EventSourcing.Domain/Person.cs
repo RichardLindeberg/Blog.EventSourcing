@@ -4,7 +4,8 @@ namespace Blog.EventSourcing.Domain
     using System.Collections.Generic;
 
     using Blog.EventSourcing.Domain.Commands;
-    using Blog.EventSourcing.Domain.Events;
+    
+    using Blog.EventSourcing.Events.Person;
 
     public class Person
     {

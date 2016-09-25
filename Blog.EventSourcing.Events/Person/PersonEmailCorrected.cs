@@ -1,10 +1,10 @@
-namespace Blog.EventSourcing.Domain.Events
+namespace Blog.EventSourcing.Events.Person
 {
     using System;
 
-    public class PersonEmailChanged : IPersonEmailChanged
+    public class PersonEmailCorrected : IPersonEmailChanged
     {
-        public PersonEmailChanged(Guid id, string email)
+        public PersonEmailCorrected(Guid id, string email)
         {
             Id = id;
             Email = email;
