@@ -5,6 +5,44 @@ namespace Blog.EventSourcing.SimpleReadModell
 
     using Blog.EventSourcing.Events.Person;
 
+    public class EmailChangedEventAndDate
+    {
+        public EmailChangedEventAndDate()
+        {
+            
+        }
+
+        public EmailChangedEventAndDate(IPersonEmailChanged evt, DateTime created)
+        {
+            PersonId = evt.Id;
+            NewEmail = evt.Email;
+            CreatedAt = created;
+        }
+
+        public Guid PersonId { get; set; }
+
+        public string NewEmail { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+    }
+
+    public class EmailChangesReadModell
+    {
+        private List<EmailChangedEventAndDate> _eventAndDate = new List<EmailChangedEventAndDate>();
+
+        public IEnumerable<EmailChangedEventAndDate> EventAndDate => _eventAndDate;
+
+        public void Handle(IPersonEvent evt, DateTime created)
+        {
+            var changed = evt as IPersonEmailChanged;
+            if (changed != null)
+            {
+                _eventAndDate.Add(new EmailChangedEventAndDate(changed, created));
+            }
+        }
+
+    }
+
     public class PeopleReadModell : IPeopleReadModell
     {
         private readonly Dictionary<Guid, NameAndEmail> _namesAndEmailsDictionary = new Dictionary<Guid, NameAndEmail>();

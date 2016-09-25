@@ -1,12 +1,8 @@
 ﻿namespace Blog.EventSourcing.WebApi
 {
-    using System;
     using System.Web.Http;
 
-    using Blog.EventSourcing.Domain;
-    using Blog.EventSourcing.SimpleReadModell;
     using EventStore.Common.Utils;
-    using EventStore.ClientAPI;
 
     using Owin;
 
@@ -27,27 +23,6 @@
             var iDOntCare = ShittyStaticReadModell.People.Value;
 
             appBuilder.UseWebApi(config);
-        }
-    }
-
-    public class ShittyStaticReadModell
-    {
-        public static Lazy<PeopleReadModell> People = new Lazy<PeopleReadModell>(() => Subscribe());
-
-        private static PeopleReadModell Subscribe()
-        {
-            var store = new StoreFactory().GetStore();
-          
-            var peopleModell = new PeopleReadModell();
-                
-            var s = store.SubscribeToStreamFrom(
-                "people",
-                null,
-               CatchUpSubscriptionSettings.Default,
-               (subscription, @event) => peopleModell.Handle(@event.Event.ToIPersonEvent()),
-               subscription => Console.WriteLine("Started catchup"),
-               (subscription, reason, arg3) => Console.WriteLine("Dropped subscription"));
-            return peopleModell;
         }
     }
 }

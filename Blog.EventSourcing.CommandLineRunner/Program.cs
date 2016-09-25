@@ -32,9 +32,15 @@ namespace Blog.EventSourcing.CommandLineRunner
                subscription => Console.WriteLine("Started catchup"),
                (subscription, reason, arg3) => Console.WriteLine("Dropped subscription"));
 
-            var _repository = new PersonRepository(new StoreFactory());
+            var cmdHanlder = new CreatePersonCommandHandler(new PersonRepository(new StoreFactory()));
             var cmd = new CreatePerson(Guid.NewGuid(), Guid.NewGuid(), "Name", "EMail");
-            _repository.ActOn(cmd.PersonId, cmd.CommandId, person => person.Create(cmd)).Wait();
+
+            cmdHanlder.Execute(cmd).Wait();
+            var changeEmailCmd = new ChangePersonEmail(Guid.NewGuid(), cmd.PersonId, "New email");
+            cmdHanlder.Execute(changeEmailCmd).Wait();
+            
+            var correctEmailCmd = new CorrectPersonEmail(Guid.NewGuid(), cmd.PersonId, "CorrectedEMail");
+            cmdHanlder.Execute(correctEmailCmd).Wait();
 
             Console.WriteLine("Waiting");
             Console.ReadKey();

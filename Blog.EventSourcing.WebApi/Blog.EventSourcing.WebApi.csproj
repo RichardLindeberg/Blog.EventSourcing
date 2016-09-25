@@ -85,9 +85,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controller\Class1.cs" />
+    <Compile Include="Controller\EmailChangedController.cs" />
+    <Compile Include="Controller\PersonController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShittyStaticReadModell.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
