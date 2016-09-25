@@ -34,7 +34,7 @@ namespace Blog.EventSourcing.CommandLineRunner
 
             var _repository = new PersonRepository(new StoreFactory());
             var cmd = new CreatePerson(Guid.NewGuid(), Guid.NewGuid(), "Name", "EMail");
-            _repository.ActOn(cmd.PersonId, cmd.CommandId, person => person.Create(cmd));
+            _repository.ActOn(cmd.PersonId, cmd.CommandId, person => person.Create(cmd)).Wait();
 
             Console.WriteLine("Waiting");
             Console.ReadKey();

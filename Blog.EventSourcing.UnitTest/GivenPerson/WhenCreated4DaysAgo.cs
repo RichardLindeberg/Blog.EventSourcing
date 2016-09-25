@@ -8,7 +8,7 @@ namespace Blog.EventSourcing.UnitTest.GivenPerson
 {
     using Blog.EventSourcing.Domain;
     using Blog.EventSourcing.Domain.Commands;
-    using Blog.EventSourcing.Domain.Events;
+    using Blog.EventSourcing.Events.Person;
 
     using NUnit.Framework;
 

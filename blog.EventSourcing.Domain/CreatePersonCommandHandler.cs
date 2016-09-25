@@ -1,6 +1,10 @@
 namespace Blog.EventSourcing.Domain
 {
+    using System.Threading.Tasks;
+
     using Blog.EventSourcing.Domain.Commands;
+
+    using EventStore.ClientAPI;
 
     public class CreatePersonCommandHandler
     {
@@ -11,24 +15,24 @@ namespace Blog.EventSourcing.Domain
             _repository = repository;
         }
 
-        public void Execute(CreatePerson command)
+        public Task<WriteResult> Execute(CreatePerson command)
         {
-            _repository.ActOn(command.PersonId, command.CommandId, person => person.Create(command));
+            return _repository.ActOn(command.PersonId, command.CommandId, person => person.Create(command));
         }
 
-        public void Execute(ChangePersonName command)
+        public Task<WriteResult> Execute(ChangePersonName command)
         {
-            _repository.ActOn(command.PersonId, command.CommandId, person => person.ChangePersonName(command));
+            return _repository.ActOn(command.PersonId, command.CommandId, person => person.ChangePersonName(command));
         }
 
-        public void Execute(CorrectPersonEmail command)
+        public Task<WriteResult> Execute(CorrectPersonEmail command)
         {
-            _repository.ActOn(command.PersonId, command.CommandId, person => person.CorrectEmail(command));
+            return _repository.ActOn(command.PersonId, command.CommandId, person => person.CorrectEmail(command));
         }
 
-        public void Execute(ChangePersonEmail command)
+        public Task<WriteResult> Execute(ChangePersonEmail command)
         {
-            _repository.ActOn(command.PersonId, command.CommandId, person => person.ChangeEmail(command));
+            return _repository.ActOn(command.PersonId, command.CommandId, person => person.ChangeEmail(command));
         }
     }
 }

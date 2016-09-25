@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Blog.EventSourcing.UnitTest.GivenSubscription
+﻿namespace Blog.EventSourcing.UnitTest.GivenSubscription
 {
-    using System.Threading;
-
+    using System;
     using Blog.EventSourcing.Domain;
     using Blog.EventSourcing.Domain.Commands;
-
     using EventStore.Projections.Core.Utils;
-
     using NUnit.Framework;
-    using NUnit.Framework.Internal;
 
     [TestFixture]
     public class WhenSubscribing
@@ -24,9 +14,7 @@ namespace Blog.EventSourcing.UnitTest.GivenSubscription
         [SetUp]
         public void SetUp()
         {
-            
             _repository = new PersonRepository(new StoreFactory());
-            
         }
 
         [Test]
@@ -46,15 +34,9 @@ namespace Blog.EventSourcing.UnitTest.GivenSubscription
                 Console.WriteLine("Eventtypes: " + item.Event.EventType);
             }
             
-
-
             var cmd = new CreatePerson(Guid.NewGuid(), Guid.NewGuid(), "Name", "EMail");
-            _repository.ActOn(cmd.PersonId, cmd.CommandId, person => person.Create(cmd));
-
+            _repository.ActOn(cmd.PersonId, cmd.CommandId, person => person.Create(cmd)).Wait();
             s.Wait();
-            Console.WriteLine("Sleeping");
-            Thread.Sleep(1000);
-            Console.WriteLine("Ended");
         }
     }
 }
