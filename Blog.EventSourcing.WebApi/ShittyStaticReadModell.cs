@@ -11,13 +11,13 @@
     {
         public static Lazy<PeopleReadModell> People = new Lazy<PeopleReadModell>(() => StartPeopleModell());
 
-        public static EMailChangesReadModell emailChanges = StartEmailChangedModell();
+        public static EmailChangesReadModell emailChanges = StartEmailChangedModell();
 
-        private static EMailChangesReadModell StartEmailChangedModell()
+        private static EmailChangesReadModell StartEmailChangedModell()
         {
             var store = new StoreFactory().GetStore();
 
-            var modell = new EMailChangesReadModell();
+            var modell = new EmailChangesReadModell();
 
             var s = store.SubscribeToStreamFrom(
                 "people",
